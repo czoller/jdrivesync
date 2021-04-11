@@ -53,7 +53,7 @@ to start with `IT` in order to distinguish them from normal unit tests. To run t
 file under `src/test/resources/.jdrivesync` and execute them with (as they are not executed during a normal build):
 
 ```
-mvn test -Pintegration-test
+mvn verify -Pintegration-test
 ```
 
 Please use a separate Google account for these integration tests as they are written to delete and to list all

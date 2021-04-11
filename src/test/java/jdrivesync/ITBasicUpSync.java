@@ -1,5 +1,6 @@
 package jdrivesync;
 
+import com.google.api.client.util.DateTime;
 import com.google.api.services.drive.model.File;
 import jdrivesync.gdrive.GoogleDriveAdapter;
 import org.junit.Before;
@@ -17,7 +18,9 @@ import java.util.Optional;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class ITBasicUpSync extends BaseClass {
     private static final String TESTDATA = ITBasicUpSync.class.getSimpleName();
@@ -50,6 +53,26 @@ public class ITBasicUpSync extends BaseClass {
         assertThat(googleDriveAdapter.search(Optional.of("test1.txt")).size(), is(1));
         assertThat(googleDriveAdapter.search(Optional.of("test2.txt")).size(), is(1));
         assertThat(googleDriveAdapter.search(Optional.of("folder")).size(), is(1));
+    }
+    
+    @Test
+    public void testUpdate() throws IOException {
+    	App app = new App();
+    	app.sync(options);
+    	sleep();
+    	
+    	DateTime timeTest1before = googleDriveAdapter.search(Optional.of("test1.txt")).get(0).getModifiedTime();
+    	assertNotNull(timeTest1before);
+    	
+    	Path pathTest1 = Paths.get(basePathTestData(), TESTDATA, "test1.txt");
+        Files.write(pathTest1, "Some text to append".getBytes(), StandardOpenOption.APPEND);
+
+		app.sync(options);
+		sleep();
+		
+		DateTime timeTest1after = googleDriveAdapter.search(Optional.of("test1.txt")).get(0).getModifiedTime();
+		assertNotNull(timeTest1after);
+		assertTrue(timeTest1after.getValue() > timeTest1before.getValue());
     }
 
     @Test

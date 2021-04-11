@@ -601,7 +601,7 @@ public class GoogleDriveAdapter {
 		Drive drive = driveFactory.getDrive(this.credential);
 		try {
 			List<File> result = new ArrayList<>();
-			Drive.Files.List request = drive.files().list();
+			Drive.Files.List request = drive.files().list().setFields("files");
 			request.setPageSize(1000);
 			do {
 				FileList files = executeWithRetry(options, () -> request.execute());
@@ -618,7 +618,7 @@ public class GoogleDriveAdapter {
 		Drive drive = driveFactory.getDrive(this.credential);
 		try {
 			List<File> result = new ArrayList<File>();
-			Drive.Files.List request = drive.files().list();
+			Drive.Files.List request = drive.files().list().setFields("files");
 			request.setPageSize(1000);
 			String query = "";
 			if (title.isPresent()) {
